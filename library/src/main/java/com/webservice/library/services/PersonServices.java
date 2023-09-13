@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.webservice.library.data.vo.v1.PersonVO;
+import com.webservice.library.entities.Person;
 import com.webservice.library.exceptions.ResourceNotFoundException;
+import com.webservice.library.mapper.DozzerMapper;
 import com.webservice.library.repositories.PersonRepository;
 
 @Service
@@ -19,49 +21,52 @@ public class PersonServices {
 	PersonRepository personRepository;
 
 	public List<PersonVO> findAll() {
-
+		
 		logger.info("Finding all people!");
 
-		return personRepository.findAll();
+		return DozzerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
 	}
 
 	public PersonVO findById(Long id) {
 
 		logger.info("Finding one person!");
-
-		return personRepository.findById(id)
+		
+		var entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+		return DozzerMapper.parseObject(entity, PersonVO.class);
 	}
 
 	public PersonVO createPerson(PersonVO person) {
-
+		
 		logger.info("Creating one person!");
-
-		return personRepository.save(person);
+		var entity = DozzerMapper.parseObject(person, Person.class);
+		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		return vo;
 	}
 
 	public PersonVO updatePerson(PersonVO person) {
 
 		logger.info("Updating one person!");
 
-		PersonVO entity = personRepository.findById(person.getId())
+		var entity = personRepository.findById(person.getId())
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
 		entity.setFirstName(person.getFirstName());
 		entity.setLastName(person.getLastName());
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
-
-		return personRepository.save(entity); 
+		
+		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		return vo;
 	}
 
 	public void deletePerson(Long id) {
 
 		logger.info("Deleting one person!");
 
-		PersonVO entity = personRepository.findById(id)
+		Person entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-
+		
 		personRepository.delete(entity);
 	}
 
