@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.webservice.library.data.vo.v1.PersonVO;
+import com.webservice.library.data.vo.v2.PersonVOV2;
 import com.webservice.library.entities.Person;
 import com.webservice.library.exceptions.ResourceNotFoundException;
 import com.webservice.library.mapper.DozzerMapper;
@@ -19,7 +20,7 @@ public class PersonServices {
 
 	@Autowired
 	PersonRepository personRepository;
-
+	
 	public List<PersonVO> findAll() {
 		
 		logger.info("Finding all people!");
@@ -43,7 +44,7 @@ public class PersonServices {
 		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
 		return vo;
 	}
-
+	
 	public PersonVO updatePerson(PersonVO person) {
 
 		logger.info("Updating one person!");
