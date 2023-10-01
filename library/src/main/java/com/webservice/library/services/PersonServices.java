@@ -1,11 +1,12 @@
 package com.webservice.library.services;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Service;
 
 import com.webservice.library.controllers.PersonController;
@@ -27,7 +28,13 @@ public class PersonServices {
 		
 		logger.info("Finding all people!");
 
-		return DozzerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
+		var persons =  DozzerMapper.parseListObjects(personRepository.findAll(), PersonVO.class);
+		
+		persons
+		.stream()
+		.forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
+		
+		return persons;
 	}
 
 	public PersonVO findById(Long id) {
@@ -36,7 +43,7 @@ public class PersonServices {
 		
 		var entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-		PersonVO vo =  DozzerMapper.parseObject(entity, PersonVO.class);
+		var vo =  DozzerMapper.parseObject(entity, PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
 		return vo;
 	}
@@ -46,6 +53,7 @@ public class PersonServices {
 		logger.info("Creating one person!");
 		var entity = DozzerMapper.parseObject(person, Person.class);
 		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 	
@@ -62,6 +70,7 @@ public class PersonServices {
 		entity.setGender(person.getGender());
 		
 		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
+		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
 		return vo;
 	}
 
