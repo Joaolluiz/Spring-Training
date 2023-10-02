@@ -55,11 +55,12 @@ class PersonServicesTest {
 		when(personRepository.findById(1L)).thenReturn(Optional.of(entity));
 
 		var result = personService.findById(1L);
+		
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
 		assertNotNull(result);
-		System.out.println(result.toString());
+
 		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
 		assertEquals("Addres Test1", result.getAddress());
 		assertEquals("First Name Test1", result.getFirstName());
@@ -70,20 +71,21 @@ class PersonServicesTest {
 	@Test
 	void testCreatePerson() {
 		Person entity = input.mockEntity(1);
-		
+
 		Person persisted = entity;
 		persisted.setId(1L);
-		
+
 		PersonVO vo = input.mockVO(1);
 		vo.setKey(1L);
-		
+
 		when(personRepository.save(entity)).thenReturn(persisted);
-		
+
 		var result = personService.createPerson(vo);
+		
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
-		
+
 		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
 		assertEquals("Addres Test1", result.getAddress());
 		assertEquals("First Name Test1", result.getFirstName());
@@ -93,7 +95,29 @@ class PersonServicesTest {
 
 	@Test
 	void testUpdatePerson() {
+		Person entity = input.mockEntity(1);
+		entity.setId(1L);
 		
+		Person persisted = entity;
+		persisted.setId(1L);
+
+		PersonVO vo = input.mockVO(1);
+		vo.setKey(1L);
+		
+		when(personRepository.findById(1L)).thenReturn(Optional.of(entity));
+		when(personRepository.save(entity)).thenReturn(persisted);
+
+		var result = personService.updatePerson(vo);
+		
+		assertNotNull(result);
+		assertNotNull(result.getKey());
+		assertNotNull(result.getLinks());
+
+		assertTrue(result.toString().contains("links: [</api/person/v1/1>;rel=\"self\"]"));
+		assertEquals("Addres Test1", result.getAddress());
+		assertEquals("First Name Test1", result.getFirstName());
+		assertEquals("Last Name Test1", result.getLastName());
+		assertEquals("Female", result.getGender());
 	}
 
 	@Test
