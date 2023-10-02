@@ -55,7 +55,7 @@ class PersonServicesTest {
 		when(personRepository.findById(1L)).thenReturn(Optional.of(entity));
 
 		var result = personService.findById(1L);
-		
+
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
@@ -81,7 +81,7 @@ class PersonServicesTest {
 		when(personRepository.save(entity)).thenReturn(persisted);
 
 		var result = personService.createPerson(vo);
-		
+
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
@@ -97,18 +97,18 @@ class PersonServicesTest {
 	void testUpdatePerson() {
 		Person entity = input.mockEntity(1);
 		entity.setId(1L);
-		
+
 		Person persisted = entity;
 		persisted.setId(1L);
 
 		PersonVO vo = input.mockVO(1);
 		vo.setKey(1L);
-		
+
 		when(personRepository.findById(1L)).thenReturn(Optional.of(entity));
 		when(personRepository.save(entity)).thenReturn(persisted);
 
 		var result = personService.updatePerson(vo);
-		
+
 		assertNotNull(result);
 		assertNotNull(result.getKey());
 		assertNotNull(result.getLinks());
@@ -122,7 +122,12 @@ class PersonServicesTest {
 
 	@Test
 	void testDeletePerson() {
-		fail("Not yet implemented");
+		Person entity = input.mockEntity(1);
+		entity.setId(1L);
+
+		when(personRepository.findById(1L)).thenReturn(Optional.of(entity));
+
+		personService.deletePerson(1L);
 	}
 
 }
