@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.webservice.library.controllers.PersonController;
 import com.webservice.library.data.vo.v1.PersonVO;
 import com.webservice.library.entities.Person;
+import com.webservice.library.exceptions.RequiredObjectIsNullException;
 import com.webservice.library.exceptions.ResourceNotFoundException;
 import com.webservice.library.mapper.DozzerMapper;
 import com.webservice.library.repositories.PersonRepository;
@@ -50,7 +51,10 @@ public class PersonServices {
 
 	public PersonVO createPerson(PersonVO person) {
 		
+		if(person == null) throw new RequiredObjectIsNullException();
+		
 		logger.info("Creating one person!");
+		
 		var entity = DozzerMapper.parseObject(person, Person.class);
 		var vo = DozzerMapper.parseObject(personRepository.save(entity), PersonVO.class);
 		vo.add(linkTo(methodOn(PersonController.class).findById(vo.getKey())).withSelfRel());
@@ -59,6 +63,8 @@ public class PersonServices {
 	
 	public PersonVO updatePerson(PersonVO person) {
 
+		if(person == null) throw new RequiredObjectIsNullException();
+		
 		logger.info("Updating one person!");
 
 		var entity = personRepository.findById(person.getKey())
