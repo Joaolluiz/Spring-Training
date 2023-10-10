@@ -23,7 +23,7 @@ public class Book implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "launch_date", nullable = false, length = 180)
+	@Column(nullable = false, length = 180)
 	private String author;
 	
 	@Column(name = "launch_date", nullable = false)
@@ -33,7 +33,7 @@ public class Book implements Serializable{
 	@Column(nullable = false)
 	private Double price;
 	
-	@Column(name = "launch_date", nullable = false, length = 250)
+	@Column(nullable = false, length = 250)
 	private String title;
 	
 	public Book() {}
