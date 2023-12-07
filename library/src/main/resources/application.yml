@@ -1,9 +1,11 @@
+cors:
+    originPatterns: "http://localhost:3000,http://localhost:8080,https://library.com.br"
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/library?useTimezone=true&serverTimezone=UTC
     username: root
-    password: Joaoluizbo2
+    password: joaoluizbo2
   jpa:
     hibernate:
       ddl-auto: none

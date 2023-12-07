@@ -4,14 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.webservice.library.data.vo.v1.PersonVO;
 import com.webservice.library.services.PersonServices;
@@ -53,7 +46,7 @@ public class PersonController {
 	public List<PersonVO> findAll() {
 		return personServices.findAll();
 	}
-	
+	@CrossOrigin(origins = "http://localhost:8080")
 	@GetMapping(value = "/{id}", 
 		produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
 	@Operation(summary = "Finds a Person", description = "Finds a Person", 
@@ -72,7 +65,7 @@ public class PersonController {
 	public PersonVO findById(@PathVariable(value = "id") Long id) {
 		return personServices.findById(id);
 	}
-	
+	@CrossOrigin(origins = {"http://localhost:8080", "https://library.com.br"})
 	@PostMapping(
 			consumes = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML },
 			produces = { MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.APPLICATION_YML })
