@@ -44,6 +44,7 @@ public class User implements UserDetails, Serializable {
 	@JoinTable(name = "user_permission", joinColumns = {@JoinColumn (name = "id_user")},
 		inverseJoinColumns = {@JoinColumn (name = "id_permission")}
 	)
+
 	private List<Permission> permissions;
 
 	public List<String> getRoles() {
