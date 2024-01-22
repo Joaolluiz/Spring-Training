@@ -18,6 +18,7 @@ public class User implements UserDetails, Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 	@Column(name = "user_name", unique = true) // o unique significa que não pode ser repetido, só pode ser um.
 	private String userName;
