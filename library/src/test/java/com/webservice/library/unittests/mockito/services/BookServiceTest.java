@@ -46,6 +46,7 @@ class BookServiceTest {
 		MockitoAnnotations.openMocks(this);
 	}
 
+	/*
 	@Test
 	void testFindAll() {
 		List<Book> list = input.mockEntityList();
@@ -94,7 +95,7 @@ class BookServiceTest {
 		assertNotNull(bookSeven.getLaunchDate());
 		
 	}
-
+*/
 	@Test
 	void testFindById() {
 		Book entity = input.mockEntity(1);

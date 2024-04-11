@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import com.webservice.library.controllers.BookController;
@@ -25,16 +31,28 @@ public class BookService {
 	@Autowired
 	BookRepository bookRepository;
 
-	public List<BookVO> findAll() {
+	@Autowired
+	PagedResourcesAssembler<BookVO> assembler;
+
+	public PagedModel<EntityModel<BookVO>> findAll(Pageable pageable) {
 
 		logger.info("Finding all books!");
 
-		var books = DozzerMapper.parseListObjects(bookRepository.findAll(), BookVO.class);
-		books
-		.stream()
-		.forEach(b -> b.add(linkTo(methodOn(BookController.class).findById(b.getKey())).withSelfRel()));
+		Page<Book> bookPage = bookRepository.findAll(pageable);
 
-		return books;
+		Page<BookVO> bookVosPage = bookPage.map(book -> DozzerMapper.parseObject(book, BookVO.class));
+
+		bookVosPage.map(
+				book -> book.add(linkTo(methodOn(BookController.class).findById(book.getKey())).withSelfRel()));
+
+		Link link = linkTo(
+				methodOn(BookController.class)
+						.findAll(pageable.getPageNumber(),
+								pageable.getPageSize(),
+								"asc")).withSelfRel();
+
+
+		return assembler.toModel(bookVosPage, link);
 	}
 
 	public BookVO findById(Long id) {
