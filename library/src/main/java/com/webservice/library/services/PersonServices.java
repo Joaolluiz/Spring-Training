@@ -53,6 +53,26 @@ public class PersonServices {
         return assembler.toModel(personVosPage, link);
     }
 
+    public PagedModel<EntityModel<PersonVO>> findPersonsByName(String firstName, Pageable pageable) {
+
+        logger.info("Finding persons by name! ");
+
+        var personPage = personRepository.findPersonsByName(firstName, pageable);
+
+        var personVosPage = personPage.map(person -> DozzerMapper.parseObject(person, PersonVO.class));
+
+        personVosPage.map(
+                person -> person.add(linkTo(methodOn(PersonController.class).findById(person.getKey())).withSelfRel()));
+
+        Link link = linkTo(
+                methodOn(PersonController.class)
+                        .findAll(pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                "asc")).withSelfRel();
+
+        return assembler.toModel(personVosPage, link);
+    }
+
     public PersonVO findById(Long id) {
 
         logger.info("Finding one person!");
