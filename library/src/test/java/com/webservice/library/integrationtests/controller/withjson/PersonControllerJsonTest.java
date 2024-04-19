@@ -10,6 +10,8 @@ import com.webservice.library.integrationtests.testcontainers.AbstractIntegratio
 import com.webservice.library.integrationtests.vo.AccountCredentialsVO;
 import com.webservice.library.integrationtests.vo.PersonVO;
 import com.webservice.library.integrationtests.vo.TokenVO;
+import com.webservice.library.integrationtests.vo.wrappers.PersonEmbeddedVO;
+import com.webservice.library.integrationtests.vo.wrappers.WrapperPersonVO;
 import io.restassured.builder.RequestSpecBuilder;
 
 import io.restassured.filter.log.LogDetail;
@@ -231,6 +233,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .queryParams("page", 3, "size", 10, "direction", "desc")
                 .when()
                 .get()
                 .then()
@@ -239,9 +242,9 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<PersonVO> people = objectMapper.readValue(content,
-                new TypeReference<List<PersonVO>>() {
-                });
+        WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+
+        List<PersonVO> people = wrapper.getEmbedded().getPersons();
 
         PersonVO foundPersonOne = people.get(0);
         person = foundPersonOne;
@@ -251,16 +254,16 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertNotNull(foundPersonOne.getLastName());
         assertNotNull(foundPersonOne.getAddress());
         assertNotNull(foundPersonOne.getGender());
-        assertTrue(foundPersonOne.getEnabled());
+        assertFalse(foundPersonOne.getEnabled());
 
-        assertEquals(1, foundPersonOne.getId());
+        assertEquals(477, foundPersonOne.getId());
 
-        assertEquals("Joao", foundPersonOne.getFirstName());
-        assertEquals("Luiz", foundPersonOne.getLastName());
-        assertEquals("Amazonas", foundPersonOne.getAddress());
+        assertEquals("Wain", foundPersonOne.getFirstName());
+        assertEquals("Chalker", foundPersonOne.getLastName());
+        assertEquals("4 Sycamore Park", foundPersonOne.getAddress());
         assertEquals("Male", foundPersonOne.getGender());
 
-        PersonVO foundPersonSix = people.get(4);
+        PersonVO foundPersonSix = people.get(5);
 
         assertNotNull(foundPersonSix.getId());
         assertNotNull(foundPersonSix.getFirstName());
@@ -269,12 +272,12 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
         assertNotNull(foundPersonSix.getGender());
         assertTrue(foundPersonSix.getEnabled());
 
-        assertEquals(7, foundPersonSix.getId());
+        assertEquals(534, foundPersonSix.getId());
 
-        assertEquals("Nikola", foundPersonSix.getFirstName());
-        assertEquals("Tesla", foundPersonSix.getLastName());
-        assertEquals("Amazonas - Manaus", foundPersonSix.getAddress());
-        assertEquals("male", foundPersonSix.getGender());
+        assertEquals("Vinny", foundPersonSix.getFirstName());
+        assertEquals("Kingswood", foundPersonSix.getLastName());
+        assertEquals("0 Mallory Road", foundPersonSix.getAddress());
+        assertEquals("Female", foundPersonSix.getGender());
 
     }
 

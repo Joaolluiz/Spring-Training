@@ -12,6 +12,7 @@ import com.webservice.library.integrationtests.testcontainers.AbstractIntegratio
 import com.webservice.library.integrationtests.vo.AccountCredentialsVO;
 import com.webservice.library.integrationtests.vo.PersonVO;
 import com.webservice.library.integrationtests.vo.TokenVO;
+import com.webservice.library.integrationtests.vo.wrappers.WrapperPersonVO;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -215,8 +216,9 @@ public class PersonControllerXmlTest extends AbstractIntegrationTest {
                 .body()
                 .asString();
 
-        List<PersonVO> people = objectMapper.readValue(content, new TypeReference<List<PersonVO>>() {
-        });
+        WrapperPersonVO wrapper = objectMapper.readValue(content, WrapperPersonVO.class);
+
+        List<PersonVO> people = wrapper.getEmbedded().getPersons();
 
         PersonVO foundPersonOne = people.get(0);
 

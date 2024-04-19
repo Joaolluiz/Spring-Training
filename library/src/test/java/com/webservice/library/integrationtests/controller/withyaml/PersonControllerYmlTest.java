@@ -11,6 +11,7 @@ import com.webservice.library.integrationtests.testcontainers.AbstractIntegratio
 import com.webservice.library.integrationtests.vo.AccountCredentialsVO;
 import com.webservice.library.integrationtests.vo.PersonVO;
 import com.webservice.library.integrationtests.vo.TokenVO;
+import com.webservice.library.integrationtests.vo.wrappers.WrapperPersonVO;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -235,7 +236,7 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
     @Order(5)
     public void testFindAll() throws JsonMappingException, JsonProcessingException {
 
-        var content = given().spec(specification)
+        var wrapper = given().spec(specification)
                 .config(
                         RestAssuredConfig
                                 .config()
@@ -251,9 +252,9 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(PersonVO[].class, objectMapper);
+                .as(WrapperPersonVO.class, objectMapper);
 
-        List<PersonVO> people = Arrays.asList(content);
+        List<PersonVO> people = wrapper.getEmbedded().getPersons();;
 
         PersonVO foundPersonOne = people.get(0);
 
