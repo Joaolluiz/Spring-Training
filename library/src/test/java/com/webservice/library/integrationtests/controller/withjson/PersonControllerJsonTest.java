@@ -283,7 +283,7 @@ public class PersonControllerJsonTest extends AbstractIntegrationTest {
 
     @Test
     @Order(7)
-    public void testByName() throws JsonMappingException, JsonProcessingException {
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
 
         var content = given().spec(specification)
                 .contentType(TestConfigs.CONTENT_TYPE_JSON)

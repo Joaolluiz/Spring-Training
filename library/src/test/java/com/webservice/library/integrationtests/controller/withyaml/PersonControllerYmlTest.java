@@ -296,10 +296,53 @@ public class PersonControllerYmlTest extends AbstractIntegrationTest {
 
     }
 
-
-
     @Test
     @Order(6)
+    public void testFindByName() throws JsonMappingException, JsonProcessingException {
+
+        var wrapper = given().spec(specification)
+                .config(
+                        RestAssuredConfig
+                                .config()
+                                .encoderConfig(EncoderConfig.encoderConfig()
+                                        .encodeContentTypeAs(
+                                                TestConfigs.CONTENT_TYPE_YML,
+                                                ContentType.TEXT)))
+                .contentType(TestConfigs.CONTENT_TYPE_YML)
+                .accept(TestConfigs.CONTENT_TYPE_YML)
+                .pathParam("firstName", "ayr")
+                .queryParams("page", 0, "size", 6, "direction", "desc")
+                .when()
+                .get("/findPersonByName/{firstName}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .as(PagedModelPerson.class, objectMapper);
+
+        List<PersonVO> people = wrapper.getContent();
+
+        PersonVO foundPersonOne = people.get(0);
+        person = foundPersonOne;
+
+        assertNotNull(foundPersonOne.getId());
+        assertNotNull(foundPersonOne.getFirstName());
+        assertNotNull(foundPersonOne.getLastName());
+        assertNotNull(foundPersonOne.getAddress());
+        assertNotNull(foundPersonOne.getGender());
+        assertFalse(foundPersonOne.getEnabled());
+
+        assertEquals(133, foundPersonOne.getId());
+
+        assertEquals("Sayres", foundPersonOne.getFirstName());
+        assertEquals("Styche", foundPersonOne.getLastName());
+        assertEquals("053 Marquette Street", foundPersonOne.getAddress());
+        assertEquals("Male", foundPersonOne.getGender());
+
+    }
+
+    @Test
+    @Order(7)
     public void testFindAllWithoutToken() throws JsonMappingException, JsonProcessingException {
 
         RequestSpecification specificationWithoutToken = new RequestSpecBuilder()
